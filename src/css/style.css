@@ -1,0 +1,59 @@
+@media (min-width: 768px) {
+    .md\:flex {
+        display: flex;
+    }
+
+    .language {
+        display: block;
+    }
+}
+
+/* media.css */
+
+/* ===== Смартфоны ===== */
+@media (max-width: 640px) {
+    .contact-map-area {
+        width: 100% !important;
+        height: 300px !important;
+    }
+
+    .contact-map-area iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+/* ===== Планшеты ===== */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .contact-map-area {
+        width: 100% !important;
+        height: 500px !important;
+    }
+
+    .contact-map-area iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+/* ===== Десктоп ===== */
+@media (min-width: 1025px) {
+    .contact-map-area {
+        width: 1000px !important;
+        /* как у тебя в коде */
+        height: 700px !important;
+        /* lg:h-[700px] */
+    }
+
+    .contact-map-area iframe {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+/* ===== Общие стили ===== */
+.contact-map-area {
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    overflow: hidden;
+}

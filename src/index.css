@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Handicraft-inspired warm palette */
+    --background: 40 25% 97%;
+    --foreground: 25 30% 20%;
+
+    --card: 40 30% 99%;
+    --card-foreground: 25 30% 20%;
+
+    --popover: 40 30% 99%;
+    --popover-foreground: 25 30% 20%;
+
+    /* Warm terracotta primary */
+    --primary: 15 65% 55%;
+    --primary-foreground: 40 25% 98%;
+
+    /* Soft cream secondary */
+    --secondary: 40 20% 92%;
+    --secondary-foreground: 25 30% 20%;
+
+    --muted: 40 15% 90%;
+    --muted-foreground: 25 15% 45%;
+
+    /* Deep sage accent */
+    --accent: 145 25% 35%;
+    --accent-foreground: 40 25% 98%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 40 25% 98%;
+
+    --border: 40 20% 88%;
+    --input: 40 20% 88%;
+    --ring: 15 65% 55%;
+
+    --radius: 0.75rem;
+
+    /* Gradients for handicraft aesthetic */
+    --gradient-warm: linear-gradient(135deg, hsl(15 65% 55%) 0%, hsl(25 55% 45%) 100%);
+    --gradient-earth: linear-gradient(180deg, hsl(40 25% 97%) 0%, hsl(40 20% 92%) 100%);
+    --gradient-overlay: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 100%);
+    
+    /* Shadows with warm tones */
+    --shadow-soft: 0 2px 8px hsl(25 30% 20% / 0.06);
+    --shadow-medium: 0 4px 16px hsl(25 30% 20% / 0.08);
+    --shadow-strong: 0 8px 32px hsl(25 30% 20% / 0.12);
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  .dark {
+    --background: 25 25% 12%;
+    --foreground: 40 25% 95%;
+
+    --card: 25 20% 15%;
+    --card-foreground: 40 25% 95%;
+
+    --popover: 25 20% 15%;
+    --popover-foreground: 40 25% 95%;
+
+    --primary: 15 65% 55%;
+    --primary-foreground: 40 25% 98%;
+
+    --secondary: 25 15% 20%;
+    --secondary-foreground: 40 25% 95%;
+
+    --muted: 25 15% 22%;
+    --muted-foreground: 40 15% 60%;
+
+    --accent: 145 25% 40%;
+    --accent-foreground: 40 25% 98%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 40 25% 98%;
+
+    --border: 25 15% 25%;
+    --input: 25 15% 25%;
+    --ring: 15 65% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Custom animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scale-in 0.4s ease-out forwards;
+}
+
+/* Swiper pagination styles */
+.swiper-pagination-bullet {
+  @apply bg-white/50 opacity-100;
+}
+
+.swiper-pagination-bullet-active {
+  @apply bg-primary;
+}
+
+/* Utility classes */
+.hover-scale {
+  @apply transition-transform duration-200 hover:scale-105;
+}
