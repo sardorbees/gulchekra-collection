@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -20,35 +20,37 @@ const Index = () => {
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('newest');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Получаем продукты с API
   const fetchProducts = async () => {
     try {
+      setLoading(true);
       const res = await axios.get('http://127.0.0.1:8000/api/product/products/');
-      setProducts(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Ошибка при загрузке товаров:', error);
+      // 👇 проверяем, где находятся данные
+      const data = Array.isArray(res.data) ? res.data : res.data.results;
+      setProducts(data || []);
+      setError(null);
+    } catch (err) {
+      console.error('Ошибка при загрузке товаров:', err);
+      setError('Mahsulotlarni yuklab bo‘lmadi');
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchProducts();
-    const interval = setInterval(fetchProducts, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   const getProductName = (product: any) => {
     if (language === 'en' && product.name_en) return product.name_en;
     if (language === 'ru' && product.name_ru) return product.name_ru;
-    return product.title || product.name || '';
+    return product.name || product.title;
   };
 
-  // Фильтрация и сортировка
   const filteredProducts = products
     .filter(p =>
-      getProductName(p).toLowerCase().includes(search.toLowerCase())
+      getProductName(p)?.toLowerCase().includes(search.toLowerCase())
     )
     .sort((a, b) => {
       if (sortBy === 'priceAsc') return a.price - b.price;
@@ -58,19 +60,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Banner */}
       <HeroBanner />
-
-      {/* Projects Section */}
       <ProjectsSection />
 
-      {/* Products Section */}
       <section id="products" className="container mx-auto px-4 py-16">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
           {t.products.title}
         </h2>
 
-        {/* Filters */}
+        {/* 🔍 Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -93,32 +91,30 @@ const Index = () => {
           </Select>
         </div>
 
-        {/* Product Grid */}
+        {/* 🛍️ Product Grid */}
         {loading ? (
-          <div className="text-center py-20 text-muted-foreground">
-            Загрузка товаров...
+          <div className="text-center py-12 text-muted-foreground">
+            Yuklanmoqda...
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 py-12">{error}</div>
+        ) : filteredProducts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map(product => (
+              <ProductCard
+                key={product.id}
+                id={product.id}
+                name={getProductName(product)}
+                price={product.price}
+                image={product.image}
+                description={product.description}
+              />
+            ))}
           </div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map(product => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={getProductName(product)}
-                  price={product.price}
-                  image={product.img || product.image}
-                  description={product.description || ''}
-                />
-              ))}
-            </div>
-
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">{t.products.noResults}</p>
-              </div>
-            )}
-          </>
+          <div className="text-center py-12 text-muted-foreground">
+            Mahsulot topilmadi
+          </div>
         )}
       </section>
     </div>
