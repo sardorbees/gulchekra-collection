@@ -22,17 +22,45 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Добавь import axios из 'axios' если ещё нет
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://127.0.0.1:8000/api/product/products/');
-      // 👇 проверяем, где находятся данные
-      const data = Array.isArray(res.data) ? res.data : res.data.results;
-      setProducts(data || []);
       setError(null);
+
+      // Логируем полный ответ для диагностики
+      const res = await axios.get('http://127.0.0.1:8000/api/product/products/');
+      console.log('API response:', res);
+
+      // Возможные варианты: res.data = [] или { results: [] } или { data: [...] }
+      let data = res.data;
+      if (data && data.results) data = data.results;
+      if (data && data.data) data = data.data;
+      if (!Array.isArray(data)) {
+        console.warn('Unexpected products format, trying to extract items...', data);
+        // если res.data имеет ключ items или products
+        if (data.items) data = data.items;
+        else if (data.products) data = data.products;
+        else data = [];
+      }
+
+      // Нормализуем поля: некоторые бэки возвращают camelCase или snake_case
+      const normalized = data.map((p: any) => ({
+        id: p.id ?? p.pk ?? Math.random().toString(36).slice(2, 9),
+        name: p.name ?? p.title ?? p.name_uz ?? p.name_uzbek,
+        name_en: p.name_en ?? p.nameEn ?? p.title_en,
+        name_ru: p.name_ru ?? p.nameRu ?? p.title_ru,
+        price: p.price ?? p.cost ?? 0,
+        image: p.image ?? (p.image && typeof p.image === 'object' ? p.image.url : null) ?? p.image_url ?? p.imageUrl,
+        description: p.description ?? p.short_description ?? p.desc,
+        raw: p,
+      }));
+
+      console.log('Normalized products:', normalized);
+      setProducts(normalized);
     } catch (err) {
       console.error('Ошибка при загрузке товаров:', err);
-      setError('Mahsulotlarni yuklab bo‘lmadi');
+      setError('Mahsulotlarni yuklab bo‘lmadi — tekshiring console/network');
     } finally {
       setLoading(false);
     }
