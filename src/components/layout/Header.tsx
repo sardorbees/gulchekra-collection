@@ -22,6 +22,7 @@ export const Header = () => {
   const languages: { code: Language; label: string }[] = [
     { code: 'uz', label: 'UZ' },
     { code: 'ru', label: 'RU' },
+    { code: 'en', label: 'EN' },
   ];
   const [isOpen, setIsOpen] = useState(false);
 

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,39 +13,76 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { ProjectsSection } from '@/components/home/ProjectsSection';
 
+// Mock products data - will be replaced with real data from database
+const mockProducts = [
+  {
+    id: '1',
+    name: "Qo'l ishlov berish suzane",
+    nameEn: 'Handcrafted Suzani',
+    nameRu: 'Ручная вышивка Сузани',
+    price: 450000,
+    image: 'https://images.unsplash.com/photo-1582582494374-8e87cd5b76d8?w=800',
+    description: "An'anaviy o'zbek suzane",
+  },
+  {
+    id: '2',
+    name: 'Kulol idish',
+    nameEn: 'Ceramic Pottery',
+    nameRu: 'Керамическая посуда',
+    price: 120000,
+    image: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=800',
+    description: "Qo'lda yasalgan kulolchilik",
+  },
+  {
+    id: '3',
+    name: "To'qilgan gilam",
+    nameEn: 'Woven Carpet',
+    nameRu: 'Тканый ковер',
+    price: 850000,
+    image: 'https://images.unsplash.com/photo-1600166898405-da9535204843?w=800',
+    description: 'Milliy uslubdagi gilam',
+  },
+  {
+    id: '4',
+    name: "Yog'och o'ymakorlik",
+    nameEn: 'Wood Carving',
+    nameRu: 'Резьба по дереву',
+    price: 320000,
+    image: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800',
+    description: "Yog'ochdan yasalgan san'at",
+  },
+  {
+    id: '5',
+    name: "Metall san'ati",
+    nameEn: 'Metal Art',
+    nameRu: 'Металлическое искусство',
+    price: 280000,
+    image: 'https://images.unsplash.com/photo-1599751449307-c7e0fce4d4c7?w=800',
+    description: 'Metalldan yasalgan buyumlar',
+  },
+  {
+    id: '6',
+    name: "To'qimachilik",
+    nameEn: 'Textile Weaving',
+    nameRu: 'Ткачество',
+    price: 180000,
+    image: 'https://images.unsplash.com/photo-1606306520087-8e82a69e6f2e?w=800',
+    description: "Qo'lda to'qilgan matolar",
+  },
+];
+
 const Index = () => {
   const { t, language } = useLanguage();
-  const [products, setProducts] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [sortBy, setSortBy] = useState('newest');
-  const [loading, setLoading] = useState(true);
 
-  // Получаем продукты с API
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get('http://127.0.0.1:8000/api/product/products/');
-      setProducts(res.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Ошибка при загрузке товаров:', error);
-      setLoading(false);
-    }
+  const getProductName = (product: typeof mockProducts[0]) => {
+    if (language === 'en') return product.nameEn;
+    if (language === 'ru') return product.nameRu;
+    return product.name;
   };
 
-  useEffect(() => {
-    fetchProducts();
-    const interval = setInterval(fetchProducts, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const getProductName = (product: any) => {
-    if (language === 'en' && product.name_en) return product.name_en;
-    if (language === 'ru' && product.name_ru) return product.name_ru;
-    return product.title || product.name || '';
-  };
-
-  // Фильтрация и сортировка
-  const filteredProducts = products
+  const filteredProducts = mockProducts
     .filter(p =>
       getProductName(p).toLowerCase().includes(search.toLowerCase())
     )
@@ -58,7 +94,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
-      {/* Hero Banner */}
+      {/* Hero Banner with Swiper */}
       <HeroBanner />
 
       {/* Projects Section */}
@@ -94,31 +130,23 @@ const Index = () => {
         </div>
 
         {/* Product Grid */}
-        {loading ? (
-          <div className="text-center py-20 text-muted-foreground">
-            Загрузка товаров...
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map(product => (
-                <ProductCard
-                  key={product.id}
-                  id={product.id}
-                  name={getProductName(product)}
-                  price={product.price}
-                  image={product.img || product.image}
-                  description={product.description || ''}
-                />
-              ))}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map(product => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={getProductName(product)}
+              price={product.price}
+              image={product.image}
+              description={product.description}
+            />
+          ))}
+        </div>
 
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">{t.products.noResults}</p>
-              </div>
-            )}
-          </>
+        {filteredProducts.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground">{t.products.search}</p>
+          </div>
         )}
       </section>
     </div>
