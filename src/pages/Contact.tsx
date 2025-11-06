@@ -54,7 +54,7 @@ const Contact = () => {
     setStatusMessage("");
 
     try {
-      const response = await axios.post("http://127.0.0.1:8000/api/applicationapplications/", formData);
+      const response = await axios.post("https://gulchekhras-admin.onrender.com/api/applicationapplications/", formData);
       if (response.status === 201) {
         setStatusMessage("✅ Ваша заявка успешно отправлена!");
         setFormData({ full_name: "", phone: "", question: "" });

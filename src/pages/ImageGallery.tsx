@@ -14,7 +14,7 @@ const ImageGallery = () => {
   // Загружаем изображения с бэкенда
   const fetchImages = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/img/images/");
+      const response = await axios.get("https://gulchekhras-admin.onrender.com/api/img/images/");
       setImages(response.data);
     } catch (error) {
       console.error("Ошибка при загрузке изображений:", error);

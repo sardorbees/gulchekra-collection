@@ -19,7 +19,7 @@ const Videos = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/api/video/videos/");
+        const response = await axios.get("https://gulchekhras-admin.onrender.com/api/video/videos/");
         setVideos(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке видео:", error);

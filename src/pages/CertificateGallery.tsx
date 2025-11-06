@@ -16,7 +16,7 @@ const CertificateGallery = () => {
   // Загружаем изображения с бэкенда
   const fetchCertificates = async () => {
     try {
-      const response = await axios.get("http://127.0.0.1:8000/api/certifikat/images/");
+      const response = await axios.get("https://gulchekhras-admin.onrender.com/api/certifikat/images/");
       setCertificates(response.data);
     } catch (error) {
       console.error("Ошибка при загрузке сертификатов:", error);
